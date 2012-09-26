@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/email1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="First email"
+        android:inputType="textEmailAddress"
+        android:singleLine="true" />
+
+    <requestFocus />
+
+    <EditText
+        android:id="@+id/phone1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="First phone number"
+        android:inputType="phone"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/email2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Second email"
+        android:inputType="textEmailAddress"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/phone2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Second phone number"
+        android:inputType="phone"
+        android:singleLine="true" />
+
+    <CheckBox
+        android:id="@+id/debugNoises"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Debug noises" />
+
+    <CheckBox
+        android:id="@+id/logging"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Logging" 
+        android:checked="true" />
+
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="doStart"
+        android:text="Start monitoring" />
+
+    <Button
+        android:id="@+id/quitButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="doQuit"
+        android:text="Quit" />
+
+</LinearLayout>
