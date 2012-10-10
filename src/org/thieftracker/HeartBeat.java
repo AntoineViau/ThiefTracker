@@ -12,28 +12,16 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 public class HeartBeat extends TimerTask {
 
-	private static volatile HeartBeat instance;
 	private String deviceId;
 	private Timer heartBeatTimer;
 	private String url;
 	private Integer period;
 	
-	private HeartBeat() {
+	public HeartBeat() {
 		this.heartBeatTimer = null;
 		this.deviceId = null;
 		this.url = null;
 		this.period = 1000 * 60 * 60;
-	}
-	
-	public static HeartBeat getInstance() {
-		if ( HeartBeat.instance == null ) {
-			synchronized(HeartBeat.class) {
-				if ( HeartBeat.instance == null ) { 				
-					HeartBeat.instance = new HeartBeat();
-				}
-			}
-		}
-		return( HeartBeat.instance );
 	}
 	
 	public void setDeviceId(String deviceId) {
@@ -57,7 +45,7 @@ public class HeartBeat extends TimerTask {
 	public void start() {
 		if ( this.heartBeatTimer == null && this.url != null ) {
 			this.heartBeatTimer = new Timer("HeartBeatTimer", true);
-			heartBeatTimer.schedule(HeartBeat.getInstance(), 0, this.period);
+			heartBeatTimer.schedule(this, 0, this.period);
 		}
 	}
 		
@@ -80,10 +68,10 @@ public class HeartBeat extends TimerTask {
 			//request.setEntity(new UrlEncodedFormEntity(nameValuePairs));						
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 		    String responseBody = client.execute(request, responseHandler);			
-		    Logger.getInstance().log("HeartBeat ok :"+responseBody);
+		    ThiefTracker.getLogger().log("HeartBeat ok : "+responseBody);
 		} 
 		catch (IOException e) {		
-			Logger.getInstance().log("HeartBeat error : "+e.getMessage());
+			ThiefTracker.getLogger().log("HeartBeat error : "+e.getMessage());
 		}	
 	}
 }

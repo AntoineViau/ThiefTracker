@@ -4,23 +4,19 @@ import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 
 public class LocationService implements LocationListener {
 
-	private static volatile LocationService instance;
-	private Context context;
 	private LocationManager locationManager;
 	private ILocationReceiver quickLocationReceiver;
 	private ILocationReceiver accurateLocationReceiver;
 	private ILocationReceiver trackingLocationReceiver;
-	private double lastKnownLatitude;
-	private double lastKnownLongitude;
+	//private double lastKnownLatitude;
+	//private double lastKnownLongitude;
 	private boolean trackingActive;
 
-	private LocationService(Context context) {
-		this.context = context;		
+	public LocationService(Context context) {	
 		this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 		this.quickLocationReceiver = null;
 		this.accurateLocationReceiver = null;
@@ -28,28 +24,9 @@ public class LocationService implements LocationListener {
 		this.trackingActive = false;
 	}
 	
-	public static LocationService getInstance(Context context) {
-		if ( LocationService.instance == null ) {
-			synchronized(LocationService.class) {
-				if ( LocationService.instance == null ) { 				
-					LocationService.instance = new LocationService(context);
-				}
-			}
-		}
-		return( LocationService.instance );
-	}
 	
 	public void getQuickLocation(ILocationReceiver receiver) {
 		this.quickLocationReceiver = receiver;
-		
-		LocationProvider provider;
-		boolean r;
-		provider = locationManager.getProvider(LocationManager.NETWORK_PROVIDER);
-		r = provider.requiresNetwork();
-
-		provider = locationManager.getProvider(LocationManager.GPS_PROVIDER);
-		r = provider.requiresNetwork();
-		
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);		
 	}
 	
@@ -98,8 +75,8 @@ public class LocationService implements LocationListener {
 				locationManager.removeUpdates(this);
 			}
 		}
-		this.lastKnownLatitude = latitude;
-		this.lastKnownLongitude = longitude;
+		//this.lastKnownLatitude = latitude;
+		//this.lastKnownLongitude = longitude;
 	}
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {

@@ -1,30 +1,35 @@
+
 package org.thieftracker;
+
+import java.util.Observable;
+import java.util.Observer;
 
 import android.content.Context;
 
-public class MotionMonitor implements IMotionReactor {
+/**
+ * This the application level class for motion detection.
+ * Since we do not want MotionDetector to be polluted by
+ * any application objects/methods, this class will do
+ * the job.
+ * @author Antoine
+ *
+ */
+public class MotionMonitor extends MotionDetector implements Observer {
 	
-	private static volatile MotionMonitor instance;
-	private Context context;
+	public MotionMonitor(Context context) {
+		super(context);
+		this.addObserver(this); 
+	}
+			
+	@Override
+	public void update(Observable motionDetector, Object param) {
+		
+		Logger logger = ThiefTracker.getLogger();
+		logger.log("Motion detected, send message.");
 
-	private MotionMonitor(Context context) {
-		this.context = context;
-	}
+		Contacter contacter = ThiefTracker.getContacter();
+		contacter.send("Motion detected on "+ThiefTracker.getDeviceId());
+		
+	}	
 	
-	public static MotionMonitor getInstance(Context context) {
-		if ( MotionMonitor.instance == null ) {
-			synchronized(MotionMonitor.class) {
-				if ( MotionMonitor.instance == null ) { 				
-					MotionMonitor.instance = new MotionMonitor(context);
-				}
-			}
-		}
-		return( MotionMonitor.instance );
-	}
-	
-	public void onMotionDetected() {
-		Logger.getInstance().log("Motion detected.");
-		Contacter.getInstance(context).send("Motion detected !");
-	}
-
 }

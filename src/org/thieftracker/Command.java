@@ -30,7 +30,8 @@ public abstract class Command implements ICommand {
 	
 	public void answerBack(String answerText) {		
 		if ( this.originatingAddress != null && !this.originatingAddress.equals("") ) {
-			Contacter.getInstance(this.context).send(answerText, this.originatingAddress);
+			Contacter contacter = ThiefTracker.getContacter();
+			contacter.sendSms(answerText, this.originatingAddress);
 		}
 	}
 	

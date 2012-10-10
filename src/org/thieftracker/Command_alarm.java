@@ -6,19 +6,23 @@ public class Command_alarm extends Command {
 	
 	public void execute(String params) {
 
-		Context context = this.getContext();
-		
 		String[] tokens = params.split(" ");
 		String subCommand = tokens[0].toLowerCase();
 
+		Alarm alarm = ThiefTracker.getAlarm();
+		
 		if ( subCommand.equals("start".toLowerCase()) ) {
-			SoundManager.getInstance(context).startAlarm();
-			Contacter.getInstance(context).send("Alarm started.");
+			alarm.start();
+			this.answerBack("Alarm started");
+		}
+		
+		if ( subCommand.equals("playing".toLowerCase()) ) {
+			this.answerBack("Alarm : "+(alarm.isPlaying() ? "yes" : "no"));
 		}
 		
 		if ( subCommand.equals("stop".toLowerCase()) ) {
-			SoundManager.getInstance(context).stopAlarm();			
-			Contacter.getInstance(context).send("Alarm stopped.");
+			alarm.stop();
+			this.answerBack("Alarm stopped");
 		}
 	}
 

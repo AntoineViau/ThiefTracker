@@ -5,16 +5,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
 
 public class SmsReceiver  extends BroadcastReceiver {
 
-	private Context context;
-	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		this.context = context;
+		Log.d("SmsReceiver", "onReceive");
 		
+		Logger logger = ThiefTracker.getLogger();
+		
+		logger.log("Sms receveived :");
+				
 		Bundle bundle = intent.getExtras();
 
 		Object messages[] = (Object[]) bundle.get("pdus");
@@ -23,6 +26,7 @@ public class SmsReceiver  extends BroadcastReceiver {
 			smsMessage[n] = SmsMessage.createFromPdu((byte[]) messages[n]);
 		}		
 		String smsText = smsMessage[0].getMessageBody().toLowerCase();
+		logger.log(smsText);
 		String[] tokens = smsText.split(" ");
 		String commandName = tokens[0];
 		String commandClassName = "Command_"+commandName;		
@@ -30,6 +34,7 @@ public class SmsReceiver  extends BroadcastReceiver {
 			Class<?> commandClass = Class.forName("org.thieftracker."+commandClassName);
 			Command command;
 			try {
+				logger.log("Command found for this SMS. Execute !");
 				command = (Command)commandClass.newInstance();
 				command.setContext(context);
 				command.setOriginatingAddress(smsMessage[0].getOriginatingAddress());
@@ -41,7 +46,7 @@ public class SmsReceiver  extends BroadcastReceiver {
 			}			
 		}
 		catch(ClassNotFoundException e) {
-			//SmsSender.getInstance(context).sendSms(smsMessage[0].getOriginatingAddress(), commandName+" unknown.");
+			logger.log("No command found for this SMS");
 		}
 	}	
 }

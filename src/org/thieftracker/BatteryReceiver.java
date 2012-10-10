@@ -8,6 +8,7 @@ public class BatteryReceiver extends BroadcastReceiver {
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Contacter.getInstance(context).send("Battery low !");		
+		Contacter contacter = ThiefTracker.getContacter();
+		contacter.send("Battery low !");		
 	}
 }
