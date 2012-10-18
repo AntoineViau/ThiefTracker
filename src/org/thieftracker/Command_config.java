@@ -8,7 +8,7 @@ package org.thieftracker;
  */
 public class Command_config extends Command {
 	
-	public void execute(String params) {		
+	public void execute() {		
 		Contacter contacter = ThiefTracker.getContacter();		
 		contacter.sendSms((new ConfigRetriever()).getConfigString(), this.getOriginatingAddress());
 	}

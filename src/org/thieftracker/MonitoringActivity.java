@@ -1,5 +1,6 @@
 package org.thieftracker;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,60 +35,14 @@ public class MonitoringActivity extends Activity implements ILogRecorder {
 		Log.d("MonitoringActivity", "onCreate");
 		
 		super.onCreate(savedInstanceState);
-
+		// TODO : do not delete current viewlist
 		Logger logger = ThiefTracker.getLogger();		
-		setContentView(R.layout.activity_monitoring);	
+		setContentView(R.layout.activity_monitoring);
 		this.logStrings = new ArrayList<String>();
 		this.listView = (ListView) findViewById(R.id.logging);
 		this.listView.setAdapter( new CustomAdapter(this, 0, this.logStrings) );				
 		logger.addLogRecorder(this);
-		
-		PreferencesService preferencesService = ThiefTracker.getPreferencesService();
-		
-		MotionMonitor motionMonitor = ThiefTracker.getMotionMonitor();
-		try {
-			Float motionSensitivity = Float.parseFloat(preferencesService.getPreference("motionSensitivity"));
-			motionMonitor.setSensitivity(motionSensitivity);
-		}
-		catch(NumberFormatException e) {
-		}
-				
-		Contacter contacter = ThiefTracker.getContacter();
-		contacter.addPhoneNumber( preferencesService.getPreference("phone1") );
-		contacter.addPhoneNumber( preferencesService.getPreference("phone2") );
-		contacter.addEmailAddress( preferencesService.getPreference("email1") );
-		contacter.addEmailAddress( preferencesService.getPreference("email2") );
-		logger.log("Phones numbers : ");
-		for(String phoneNumber :  contacter.getPhonesNumbers() ) {
-			logger.log(phoneNumber);
-		}
-		logger.log("Emails addresses : ");
-		for(String emailAddress : contacter.getEmailsAddresses() ) {
-			logger.log(emailAddress);
-		}
-		contacter.setRealMode(false);
-		logger.log( contacter.isForReal() ? "Contacter is for real" : "Contacter NOT for real" );
-		
-		
-		motionMonitor.startMotionDetection();		
-		logger.log( "Motion monitor started" );
-
-		HeartBeat heartBeat = ThiefTracker.getHeartbeat();
-		try {
-			Integer heartBeatPeriod = Integer.parseInt(preferencesService.getPreference("heartBeatPeriod"));
-			if ( heartBeatPeriod > 0 ) {
-				heartBeat.setPeriod(heartBeatPeriod);
-			}
-		}
-		catch(NumberFormatException e) {
-		}
-		heartBeat.setUrl(preferencesService.getPreference("heartBeatUrl"));		
-		heartBeat.setDeviceId(ThiefTracker.getDeviceId());		
-		
-		heartBeat.start();
-		logger.log( "Heart beat started" );
-		
-		logger.log( "Config : \n"+(new ConfigRetriever()).getConfigString() );
+		logger.log("--------------- onCreate");		
 	}
 
 	public void onStop() {
@@ -107,9 +62,11 @@ public class MonitoringActivity extends Activity implements ILogRecorder {
 	}
 
 	protected void onResume() {
+		Logger logger = ThiefTracker.getLogger();
 		Log.d("MonitoringActivity", "onResume");		
 		super.onResume();
-		ThiefTracker.getLogger().log("Resuming.");
+		logger.log("Resuming.");
+		logger.log( "Config : \n"+(new ConfigRetriever()).getConfigString() ); 
 	}
 	
 	private class CustomAdapter extends ArrayAdapter {
@@ -158,6 +115,6 @@ public class MonitoringActivity extends Activity implements ILogRecorder {
 	}
 	
 	public void record(String text) {
-		runOnUiThread( new MonitoringActivityPrinter(text) );		
+		runOnUiThread( new MonitoringActivityPrinter(text) );
 	}
 }

@@ -25,10 +25,10 @@ public class SmsReceiver  extends BroadcastReceiver {
 		for (int n = 0; n < messages.length; n++) {
 			smsMessage[n] = SmsMessage.createFromPdu((byte[]) messages[n]);
 		}		
-		String smsText = smsMessage[0].getMessageBody().toLowerCase();
+		String smsText = smsMessage[0].getMessageBody();
 		logger.log(smsText);
 		String[] tokens = smsText.split(" ");
-		String commandName = tokens[0];
+		String commandName = tokens[0].toLowerCase();
 		String commandClassName = "Command_"+commandName;		
 		try {
 			Class<?> commandClass = Class.forName("org.thieftracker."+commandClassName);
@@ -36,9 +36,10 @@ public class SmsReceiver  extends BroadcastReceiver {
 			try {
 				logger.log("Command found for this SMS. Execute !");
 				command = (Command)commandClass.newInstance();
+				command.setParametersString(tokens.length > 1 ? smsText.substring(commandName.length()+1) : "" );
 				command.setContext(context);
 				command.setOriginatingAddress(smsMessage[0].getOriginatingAddress());
-				command.execute( tokens.length > 1 ? smsText.substring(commandName.length()+1) : "" );
+				command.execute();
 			} 
 			catch (IllegalAccessException e) {
 			} 

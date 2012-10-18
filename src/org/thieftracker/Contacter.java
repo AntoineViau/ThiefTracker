@@ -1,17 +1,7 @@
 package org.thieftracker;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -34,6 +24,7 @@ public class Contacter {
 	}
 		
 	public void setRealMode(boolean forReal) {
+		Log.d("Contacter", "Set Real Mode to "+(forReal ? "on" : "off"));		
 		this.realMode = forReal;
 	}
 	
@@ -66,6 +57,9 @@ public class Contacter {
 			return(true);
 		}
 		return(false);
+	}
+	public void removeEmailAddress(String emailAddress) {
+		this.emailsAddresses.remove(emailAddress);
 	}
 	
 	public String[] getPhonesNumbers() {		
@@ -108,19 +102,23 @@ public class Contacter {
 	}
 	
 	public void sendEmail(String message, String emailAddress) {
-		HttpClient client = new DefaultHttpClient();		
-		HttpPost request = new HttpPost("http://www.antoineviau.com/ThiefTracker/contacterEmail.php");		
-		request.setHeader("User-Agent", "ThiefTracker");
-		try {
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			nameValuePairs.add(new BasicNameValuePair("message", message));
-			request.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			client.execute(request);
+	
+		Log.d("Contacter", "sendEmail to "+emailAddress+" : "+message);
+		
+		PreferencesService preferencesService = ThiefTracker.getPreferencesService();
+		String account = preferencesService.getPreference("mailAccount");
+		String password = preferencesService.getPreference("mailPassword");
+		if ( !account.equals("") && !password.equals("") )
+		{
+			Mail mail = new Mail();
+			mail.setSubject("A message from ThiefTracker on device "+ThiefTracker.getDeviceId());
+			mail.setBody(message);
+			mail.addRecipient(emailAddress);
+			try {
+				mail.send();
+			}
+			catch(Exception e) {
+			}
 		}
-		catch (ClientProtocolException e) {
-	        // TODO Auto-generated catch block
-	    } catch (IOException e) {
-	        // TODO Auto-generated catch block
-	    }
 	}	
 }

@@ -3,7 +3,7 @@ package org.thieftracker;
 
 public class Command_help extends Command {
 
-	public void execute(String params) {
+	public void execute() {
 		
 		Contacter contacter = ThiefTracker.getContacter();
 		
@@ -23,11 +23,13 @@ public class Command_help extends Command {
 				"MotionDetection delayBeforeReset {nb seconds}\n" + 
 				"Location quick\n" +
 				"Location accurate\n" +
-				"Location startTracking" +
-				"Location stopTracking" +
+				"Location gpsStatus\n" +
+				"Tracking start" +
+				"Tracking stop" +
 				"Alarm start\n" +
 				"Alarm playing\n" +
-				"Alarm stop\n"
+				"Alarm stop\n" +
+				"Mail {account} {password} {recipient} log  \n"
 				,this.getOriginatingAddress()
 				);
 	}

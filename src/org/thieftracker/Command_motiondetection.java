@@ -3,19 +3,18 @@ package org.thieftracker;
 
 public class Command_motiondetection extends Command {
 	
-	public void execute(String params) {
+	public void execute() {
 
 		MotionMonitor motionMonitor = ThiefTracker.getMotionMonitor();
 				
-		String[] tokens = params.split(" ");
-		String subCommand = tokens[0].toLowerCase();
+		String subCommand = this.getParameter(0).toLowerCase();
 		
-		if ( subCommand.equals("start".toLowerCase()) ) {
+		if ( subCommand.equals("start") ) {
 			motionMonitor.startMotionDetection();
 			this.answerBack("Motion detection started.");
 		}
 		
-		if ( subCommand.equals("Sensitivity".toLowerCase()) ) {
+		if ( subCommand.equals("Sensitivity") ) {
 			float sensitivity = Float.parseFloat(subCommand.substring("motionDetectionSensitivity ".length()));
 			if ( sensitivity > 0 ) {
 				motionMonitor.setSensitivity(sensitivity);
@@ -26,10 +25,10 @@ public class Command_motiondetection extends Command {
 			}
 		}
 		
-		if ( subCommand.equals("stableDelayBeforeMonitoring".toLowerCase()) ) {
+		if ( subCommand.equals("stableDelayBeforeMonitoring") ) {
 			Integer delay = Integer.parseInt(subCommand.substring("motionDetectionDelayBeforeReset ".length()));
 			if ( delay > 0 ) {
-				motionMonitor.setStableDelayBeforeDetection(delay*1000);
+				motionMonitor.setNbMillisWithoutDetectionToBeStable(delay*1000);
 				this.answerBack("Motion delay before reset set to "+delay);
 			}
 			else {
@@ -37,7 +36,7 @@ public class Command_motiondetection extends Command {
 			}
 		}
 		
-		if ( subCommand.equals("stop".toLowerCase()) ) {
+		if ( subCommand.equals("stop") ) {
 			motionMonitor.stopMotionDetection();
 			this.answerBack("Motion detection stopped.");
 		}

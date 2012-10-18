@@ -4,14 +4,6 @@
     android:layout_height="fill_parent" 
     android:orientation="vertical">
 		<requestFocus />		  
-		  <!-- 
-<TextView  
-    android:id="@+id/logging"
-    android:layout_width="fill_parent" 
-    android:layout_height="fill_parent" 
-    android:text=""
-    />
--->
 
 <ListView  
     android:id="@+id/logging"
@@ -22,7 +14,7 @@
 	android:stackFromBottom="true"    
     />
 
-
+<!-- 
 <TextView 
     xmlns:android="http://schemas.android.com/apk/res/android" 
  	android:id="@+id/text1"  
@@ -32,17 +24,6 @@
     android:layout_height="wrap_content" 
     />
 
-<!-- 
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceLarge"
-    android:gravity="center_vertical"
-    android:paddingLeft="6dip"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-/>
--->
+ -->
     
 </LinearLayout>

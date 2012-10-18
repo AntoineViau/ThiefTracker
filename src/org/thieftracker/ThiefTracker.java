@@ -1,13 +1,18 @@
 package org.thieftracker;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+/**
+ * The ThiefTracker application creates all needed components
+ * and launches the services 
+ * @author Antoine
+ *
+ */
 public class ThiefTracker extends Application {
 
 	private static Context context;
@@ -18,18 +23,23 @@ public class ThiefTracker extends Application {
 	private static LocationService locationService;
 	private static PreferencesService preferencesService;
 	private static Alarm alarm;
+	private static LocationTracker locationTracker;
 	private static String deviceId;
-	private static BroadcastReceiver mReceiver;
-		
+	private static ComponentName serviceComponentName = null;
+
+			
 	@Override
 	public void onCreate() {
 		
-		Log.d("ThiefTracker", "ThiefTracker onCreate.");
+		Log.d("ThiefTracker", "ThiefTracker application onCreate.");
 		
 		super.onCreate();		
 		context = this.getApplicationContext();
 
 		ThiefTracker.logger = new Logger();
+		
+		ThiefTracker.logger.addLogRecorder( new FileLogRecorder() );
+		
 		if (BuildConfig.DEBUG ) {
 			ThiefTracker.logger.addLogRecorder
 			(
@@ -44,36 +54,22 @@ public class ThiefTracker extends Application {
 		ThiefTracker.preferencesService = new PreferencesService(context);
 			
 		ThiefTracker.motionMonitor = new MotionMonitor(context);
-		
-		// Workaround : 
-		// To keep motion detector active when device goes to sleep
-		// we detect the screen off, deactivate and reactivate 
-		// detection
-		ThiefTracker.mReceiver = new BroadcastReceiver() {
-	         @Override
-	         public void onReceive(Context context, Intent intent) {
-	             // Check action just to be on the safe side.
-	        	 if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-	        		 Log.d("ThiefTracker", "Screen off : stop and restart motion detection");
-	        		 if ( ThiefTracker.getMotionMonitor().isDetectionActive() ) {
-	        			 ThiefTracker.getMotionMonitor().stopMotionDetection();
-	        			 ThiefTracker.getMotionMonitor().startMotionDetection();
-	        		 }
-	             }
-	         }
-		};	
-		context.registerReceiver(ThiefTracker.mReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
-		
+				
 		ThiefTracker.contacter = new Contacter();
 		
 		ThiefTracker.heartBeat = new HeartBeat();
-
+				
 		TelephonyManager telephonyManager = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
 		ThiefTracker.deviceId = telephonyManager.getDeviceId();
 			
 		ThiefTracker.locationService = new LocationService(context);
 		
 		ThiefTracker.alarm = new Alarm(context);
+		
+		ThiefTracker.locationTracker = new LocationTracker(context);
+
+		ThiefTracker.serviceComponentName = this.startService( new Intent(this, ThiefTrackerService.class) );
+				
 	}
 	
 	public static Logger getLogger() {
@@ -89,7 +85,7 @@ public class ThiefTracker extends Application {
 	}
 		
 	public static HeartBeat getHeartbeat() {
-		return( ThiefTracker.heartBeat) ;
+		return( ThiefTracker.heartBeat );
 	}
 	
 	public static LocationService getLocationService() {
@@ -111,5 +107,14 @@ public class ThiefTracker extends Application {
 	public static Context getContext() {
 		return( ThiefTracker.context );
 	}
+
+	public static LocationTracker getLocationTracker() {
+		return( ThiefTracker.locationTracker );
+	}
+	
+	public static ComponentName getServiceComponentName() {
+		return( ThiefTracker.serviceComponentName);
+	}
+
 	
 }

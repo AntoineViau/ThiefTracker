@@ -1,13 +1,11 @@
 package org.thieftracker;
 
-import android.content.Context;
 
 public class Command_alarm extends Command {
 	
-	public void execute(String params) {
+	public void execute() {
 
-		String[] tokens = params.split(" ");
-		String subCommand = tokens[0].toLowerCase();
+		String subCommand = this.getParameter(0).toLowerCase();
 
 		Alarm alarm = ThiefTracker.getAlarm();
 		

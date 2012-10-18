@@ -3,14 +3,13 @@ package org.thieftracker;
 
 public class Command_location extends Command {
 	
-	public void execute(String params) {
+	public void execute() {
 
 		LocationService locationService = ThiefTracker.getLocationService();
 			
-		String[] tokens = params.split(" ");
-		String subCommand = tokens[0].toLowerCase();
+		String subCommand = this.getParameter(0).toLowerCase();
 	
-		if ( subCommand.equals("quick".toLowerCase()) ) {
+		if ( subCommand.equals("quick") ) {
 
 			locationService.getQuickLocation(
 				new ILocationReceiver() {
@@ -21,9 +20,10 @@ public class Command_location extends Command {
 				}
 			);
 			this.answerBack("Quick location requested.");
+			return;
 		}
 
-		if ( subCommand.equals("accurate".toLowerCase()) ) {
+		if ( subCommand.equals("accurate") ) {
 
 			locationService.getAccurateLocation(
 				new ILocationReceiver() {
@@ -34,24 +34,14 @@ public class Command_location extends Command {
 				}
 			);
 			this.answerBack("Accurate location requested.");
-		}
-		
-		if ( subCommand.equals("startTracking".toLowerCase()) ) {
-			locationService.startLocationTracking(
-				new ILocationReceiver() {
-					public void onReceiveLocation(double latitude, double longitude) {
-						Contacter contacter = ThiefTracker.getContacter();
-						contacter.send("Tracking : \nhttp://maps.google.com/maps?q="+latitude+","+longitude);
-					}
-				}
-			);
-			this.answerBack("Tracking started.");
+			return;
 		}
 
-		if ( subCommand.equals("stopTracking".toLowerCase()) ) {
-			locationService.stopLocationTracking();
-			this.answerBack("Tracking stopped.");
-		}		
+		if ( subCommand.equals("gpsstatus") ) {
+			this.answerBack("GpsStatus : "+(locationService.getGpsFix() ? "fixed" : "not fixed"));			
+			return;
+		}
+
 	}
 
 }

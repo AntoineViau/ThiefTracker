@@ -59,16 +59,16 @@ public class HeartBeat extends TimerTask {
 	}
 	
 	public void run() {
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet(this.url+"?deviceId="+this.deviceId);			
+		request.setHeader("User-Agent", "ThiefTracker");			
+		//List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		//nameValuePairs.add(new BasicNameValuePair("deviceId", this.deviceId));
+		//request.setEntity(new UrlEncodedFormEntity(nameValuePairs));						
+		ResponseHandler<String> responseHandler = new BasicResponseHandler();
 		try {		
-			HttpClient client = new DefaultHttpClient();
-			HttpGet request = new HttpGet(this.url+"?deviceId="+this.deviceId);			
-			request.setHeader("User-Agent", "ThiefTracker");			
-			//List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-			//nameValuePairs.add(new BasicNameValuePair("deviceId", this.deviceId));
-			//request.setEntity(new UrlEncodedFormEntity(nameValuePairs));						
-			ResponseHandler<String> responseHandler = new BasicResponseHandler();
-		    String responseBody = client.execute(request, responseHandler);			
-		    ThiefTracker.getLogger().log("HeartBeat ok : "+responseBody);
+			String responseBody = client.execute(request, responseHandler);			
+			ThiefTracker.getLogger().log("HeartBeat ok : "+responseBody);
 		} 
 		catch (IOException e) {		
 			ThiefTracker.getLogger().log("HeartBeat error : "+e.getMessage());

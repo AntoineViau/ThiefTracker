@@ -1,5 +1,7 @@
 package org.thieftracker;
 
+import java.util.Date;
+
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
@@ -12,6 +14,7 @@ public class ConfigRetriever {
 		HeartBeat heartBeat = ThiefTracker.getHeartbeat();
 		MotionMonitor motionMonitor = ThiefTracker.getMotionMonitor();
 		LocationService locationService = ThiefTracker.getLocationService();
+		LocationTracker locationTracker = ThiefTracker.getLocationTracker();
 		
 		String configString = "";
 		
@@ -42,19 +45,31 @@ public class ConfigRetriever {
 		
 		
 		configString += "HeartBeat : "+(heartBeat.isBeating() ? "Active" : "Inactive")+"\n";
-		String heartBeatUrl = heartBeat.getUrl();
 		
+		String heartBeatUrl = heartBeat.getUrl();		
 		configString += "HeartBeat URL : "+( heartBeatUrl != null ? heartBeatUrl : "not set" )+"\n";
 		
 		configString += "HeartBeat period : "+heartBeat.getPeriod()/1000+"\n";
 		
 		configString += "Motion detection : "+(motionMonitor.isDetectionActive() ? "Active" : "Inactive")+"\n";
 		
+		Date lastMotionDetectionDate = motionMonitor.getLastMotionDetectionDate();
+		configString += "Last motion detection : "+(lastMotionDetectionDate != null ? lastMotionDetectionDate.toString() : "No motion detected so far")+"\n";
+		
 		configString += "Motion sensitivity : "+motionMonitor.getSensitivity() +"\n";
 		
-		configString += "Motion delay before reset : "+motionMonitor.getStableDelayBeforeDetection()/1000 +"\n";
+		configString += "Nb seconds without moving to be stable : "+motionMonitor.getStableDelayBeforeDetection()/1000 +"\n";
 		
-		configString += "Location tracking : "+(locationService.isTrackingActive() ? "Active" : "Inactive")+"\n";
+		String locationTrackingUrl = locationTracker.getUrl();
+		configString += "Location tracking url : "+(locationTrackingUrl != null ? locationTrackingUrl : "Not set")+"\n";
+
+		configString += "Location tracking : "+(locationTracker.isTracking() ? "Active" : "Inactive")+"\n";
+		
+		configString += "Quick location pending : "+(locationService.quickLocationPending() ? "yes" : "no")+"\n";
+
+		configString += "Accurate location pending : "+(locationService.accurateLocationPending() ? "yes" : "no")+"\n";
+		
+		configString += "Stable : "+(motionMonitor.isStable() ? "yes" : "no")+"\n";
 		
 		return( configString );
 	}
